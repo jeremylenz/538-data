@@ -1,6 +1,6 @@
 class Data
-  def self.get_csv_data
-    data = File.read('../bad-drivers.csv')
+  def self.get_csv_data(filename)
+    data = File.read(filename)
     CSV.parse(data)
   end
 end
