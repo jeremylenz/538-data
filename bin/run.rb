@@ -2,6 +2,7 @@ require_relative '../config/environment.rb'
 State.drop_table
 State.create_table
 
+
 Driver.drop_table
 Driver.create_table
 
@@ -17,6 +18,11 @@ State.insert_all_values(data)
 Driver.insert_all_values(data)
 Insurance.insert_all_values(data)
 
+data = Data.get_csv_data('../states.csv').drop(1)
+State.insert_all_abbrevs(data)
+
 
 data = Data.get_csv_data('../hate_crimes.csv').drop(1)
 Demographic.insert_all_values(data)
+
+binding.pry
