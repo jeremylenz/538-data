@@ -15,3 +15,5 @@ data = Data.get_csv_data.drop(1)
 State.insert_all_values(data)
 Driver.insert_all_values(data)
 Insurance.insert_all_values(data)
+
+binding.pry
