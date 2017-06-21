@@ -1,5 +1,11 @@
 class Insurance
 
+
+
+  def self.cols_to_extract
+    [0,-2,-1]
+  end
+
   def self.create_table
 
     sql = <<-SQL

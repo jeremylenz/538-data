@@ -41,6 +41,8 @@ class Driver
 
   end
 
+  
+
   def self.drop_table
 
     sql = <<-SQL
