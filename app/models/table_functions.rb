@@ -23,7 +23,7 @@ class TableFunctions
 
   def self.all
     sql = "SELECT tbl_name FROM sqlite_master WHERE type = 'table';"
-    DB[:conn].execute(sql).flatten.sort
+    DB[:conn].execute(sql).flatten
   end
 
   def self.column_names(table_name)
@@ -41,7 +41,7 @@ class TableFunctions
     sql = "INSERT INTO #{table_name}\n("
     sql << column_names.map(&:to_s).join(", ")
     sql << ")\nVALUES (#{vals.map { |val| '?' }.join(', ')});"
-    DB[:conn].execute(sql, args.values)
+    DB[:conn].execute(sql, vals)
 
   end
 
@@ -61,12 +61,16 @@ class TableFunctions
 
   end
 
-  def self.extract_data(table_name)
+  def self.extract_data(table_name,data)
     case table_name
     when 'drivers'
+      Driver.extract_data(data)
     when 'insurance_data'
+      Insurance.extract_data(data)
     when 'demographics'
+      Demographic.extract_data(data)
     when 'states'
+      State.extract_data(data)
     end
   end
 

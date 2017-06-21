@@ -7,6 +7,12 @@ class State
 
   end
 
+  def self.extract_data(data)
+    data.each_with_object([]) do |row, arr|
+      arr << row[0..1]
+    end
+  end
+
   def self.find_or_create_by(name)
     if !self.find_id('state', name).empty? || !self.find_id('abbrev', name).empty?
       self.new(name)
@@ -20,64 +26,7 @@ class State
 
   end
 
-  def self.create_table
 
-    sql = <<-SQL
-      CREATE TABLE IF NOT EXISTS states (
-        id INTEGER PRIMARY KEY,
-        state TEXT,
-        abbrev TEXT
-      );
-    SQL
-
-    DB[:conn].execute(sql)
-
-  end
-
-  def self.insert_values(row)
-    sql = <<-SQL
-    INSERT INTO states (state)
-    VALUES (?);
-    SQL
-
-    DB[:conn].execute(sql, row)
-
-  end
-
-  def self.insert_abbreviation(row)
-    sql = <<-SQL
-    UPDATE states
-    SET abbrev = ?
-    WHERE state = ?;
-    SQL
-
-    DB[:conn].execute(sql, row[1],row[0])
-
-  end
-
-  def self.insert_all_abbrevs(data)
-    data.each do |row|
-      self.insert_abbreviation(row)
-    end
-  end
-
-
-  def self.insert_all_values(data)
-
-    data.each do |row|
-      self.insert_values(row[0])
-    end
-  end
-
-  def self.drop_table
-
-    sql = <<-SQL
-    DROP TABLE IF EXISTS states;
-    SQL
-
-    DB[:conn].execute(sql)
-
-  end
 
   def self.find_id_by_name(name)
     sql = <<-SQL
@@ -89,7 +38,7 @@ class State
 
   end
 
-  def self.find_id(col_name, state)  
+  def self.find_id(col_name, state)
     return nil if !["abbrev", "state"].include?(col_name)
     query = <<-SQL
     SELECT id FROM states
@@ -123,9 +72,9 @@ class State
 
   def self.fatal_duis # Returns the number of fatal DUIs per billion miles driven
     sql = <<-SQL
-    SELECT states.state, ROUND(bad_drivers_data_by_state.dfc_dui * bad_drivers_data_by_state.dfc_per_bil_miles / 100, 2)
-    FROM bad_drivers_data_by_state
-    JOIN states ON states.id = bad_drivers_data_by_state.state_id
+    SELECT states.state, ROUND(drivers.dfc_dui * drivers.dfc_per_bil_miles / 100, 2)
+    FROM drivers
+    JOIN states ON states.id = drivers.state_id
     SQL
 
     DB[:conn].execute(sql)
@@ -137,7 +86,7 @@ class State
 
     sql = <<-SQL
     SELECT ROUND(dfc_dui * dfc_per_bil_miles / 100,2)
-    FROM bad_drivers_data_by_state
+    FROM drivers
     WHERE state_id=?
     SQL
 
