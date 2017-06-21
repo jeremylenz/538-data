@@ -4,6 +4,7 @@ class State
 
   def initialize(state_name)
     @name = state_name
+
   end
 
   def self.create_table
