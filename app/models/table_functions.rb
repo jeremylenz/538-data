@@ -1,5 +1,17 @@
 class TableFunctions
 
+  def self.create_all_tables
+    Data.tables.each do |table_name,columns|
+      self.create(table_name,columns)
+    end
+  end
+
+  def self.drop_all_tables
+    Data.tables.keys.each do |table_name|
+      self.drop(table_name)
+    end
+  end
+
   def self.create(table_name, args) # args is a hash where keys are col_names, values are datatypes.
     sql = "CREATE TABLE IF NOT EXISTS #{table_name} \n(id INTEGER PRIMARY KEY"
     args.each do |arg|
